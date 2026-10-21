@@ -321,6 +321,7 @@ file (GLOB_RECURSE _OcctHeaderFiles
 	${CMAKE_CURRENT_SOURCE_DIR}/occt/src/*.h
 	${CMAKE_CURRENT_SOURCE_DIR}/occt/src/*.gxx
 	${CMAKE_CURRENT_SOURCE_DIR}/occt/src/*.lxx
+	${CMAKE_CURRENT_SOURCE_DIR}/occt/src/*.pxx
 )
 set (OcctIncludeDirs)
 foreach (_h ${_OcctHeaderFiles})
