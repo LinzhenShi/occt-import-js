@@ -316,6 +316,8 @@ file (GLOB_RECURSE OcctSourceFiles CONFIGURE_DEPENDS
 # Draw 模块依赖 TCL，wasm 构建不需要，排除
 list (FILTER OcctSourceFiles EXCLUDE REGEX "/src/Draw/")
 list (FILTER OcctSourceFiles EXCLUDE REGEX "/GTests/")
+# TKD3DHost 是 8.0 新增的 Direct3D 渲染模块，依赖 Windows 系统头 d3d9.h，wasm 构建排除
+list (FILTER OcctSourceFiles EXCLUDE REGEX "/TKD3DHost/")
 file (GLOB_RECURSE _OcctHeaderFiles
 	${CMAKE_CURRENT_SOURCE_DIR}/occt/src/*.hxx
 	${CMAKE_CURRENT_SOURCE_DIR}/occt/src/*.h
