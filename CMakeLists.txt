@@ -323,12 +323,10 @@ file (GLOB_RECURSE _OcctHeaderFiles
 	${CMAKE_CURRENT_SOURCE_DIR}/occt/src/*.lxx
 	${CMAKE_CURRENT_SOURCE_DIR}/occt/src/*.pxx
 )
-set (OcctIncludeDirs)
-foreach (_h ${_OcctHeaderFiles})
-	get_filename_component (_hdir ${_h} DIRECTORY)
-	list (APPEND OcctIncludeDirs ${_hdir})
-endforeach ()
-list (REMOVE_DUPLICATES OcctIncludeDirs)
+# ===== OCCT 8.x: package dirs with headers number in the hundreds and exceed the Windows command-line length limit (WinError 206) after adding .pxx,
+# flatten all headers into a single directory instead (OCCT header names are globally unique, the official install layout is flat too)
+set (OcctIncludeDirs ${CMAKE_BINARY_DIR}/inc)
+file (COPY ${_OcctHeaderFiles} DESTINATION ${CMAKE_BINARY_DIR}/inc)
 # ===== OCCT 8.x: Standard_Version.hxx is generated at build time, configure it from the official template =====
 include (${CMAKE_CURRENT_SOURCE_DIR}/occt/adm/cmake/version.cmake)
 set (SET_OCC_VERSION_DEVELOPMENT "")
@@ -338,7 +336,6 @@ configure_file (
 	${CMAKE_BINARY_DIR}/inc/Standard_Version.hxx
 	@ONLY
 )
-list (APPEND OcctIncludeDirs ${CMAKE_BINARY_DIR}/inc)
 
 set (OcctImportJSSourcesFolder occt-import-js/src)
 file (GLOB
