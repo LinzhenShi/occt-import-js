@@ -6,7 +6,7 @@ set (CMAKE_CONFIGURATION_TYPES Debug;Release;RelWithDebInfo;MinSizeRel)
 add_definitions (-DUNICODE -D_UNICODE)
 
 project (OcctImportJS)
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 17)
 
 # OcctImportJS
 
@@ -296,7 +296,35 @@ AddOcctModule (XCAFView)
 AddOcctModule (XSAlgo)
 AddOcctModule (XSControl)
 
-file (GLOB OcctSourceFiles ${OcctSourceFolders})
+# ===== OCCT 8.x 兼容：自动纳入 8.x 相对 7.6 新增的模块目录 =====
+file (GLOB _OcctAllModuleDirs RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/occt/src ${CMAKE_CURRENT_SOURCE_DIR}/occt/src/*)
+foreach (_dir ${_OcctAllModuleDirs})
+    if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/occt/src/${_dir})
+        list (FIND OcctSourceFolders "occt/src/${_dir}/*.c*" _idx)
+        if (_idx EQUAL -1)
+            AddOcctModule (${_dir})
+        endif ()
+    endif ()
+endforeach ()
+# ===== OCCT 8.x 分组目录布局：递归收集全部源码，并自动生成头文件包含目录 =====
+# （8.0 起 src/ 由数百个模块目录重组为少数分组目录，逐模块枚举机制失效）
+file (GLOB_RECURSE OcctSourceFiles CONFIGURE_DEPENDS
+	${CMAKE_CURRENT_SOURCE_DIR}/occt/src/*.cxx
+	${CMAKE_CURRENT_SOURCE_DIR}/occt/src/*.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/occt/src/*.c
+)
+# Draw 模块依赖 TCL，wasm 构建不需要，排除
+list (FILTER OcctSourceFiles EXCLUDE REGEX "/src/Draw/")
+file (GLOB_RECURSE _OcctHeaderFiles
+	${CMAKE_CURRENT_SOURCE_DIR}/occt/src/*.hxx
+	${CMAKE_CURRENT_SOURCE_DIR}/occt/src/*.h
+)
+set (OcctIncludeDirs)
+foreach (_h ${_OcctHeaderFiles})
+	get_filename_component (_hdir ${_h} DIRECTORY)
+	list (APPEND OcctIncludeDirs ${_hdir})
+endforeach ()
+list (REMOVE_DUPLICATES OcctIncludeDirs)
 
 set (OcctImportJSSourcesFolder occt-import-js/src)
 file (GLOB

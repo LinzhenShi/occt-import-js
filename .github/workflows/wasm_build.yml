@@ -22,8 +22,14 @@ jobs:
     - name: Get Emscripten
       run: ./tools/setup_emscripten_win.bat
     - name: Build WASM
-      run: ./tools/build_wasm_win.bat Release
+      run: ./tools/build_wasm_win_dist.bat Release
     - name: Update Package
       run: npm install
+    - name: Upload dist
+      uses: actions/upload-artifact@v4
+      with:
+        name: occt-import-js-occt8
+        path: dist/
+        if-no-files-found: warn
     - name: Run Test
       run: npm run test
