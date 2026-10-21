@@ -5,6 +5,7 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
 #include <TDF_ChildIterator.hxx>
+#include <TDF_LabelSequence.hxx>
 #include <TDocStd_Document.hxx>
 #include <TDataStd_Name.hxx>
 #include <Quantity_Color.hxx>
