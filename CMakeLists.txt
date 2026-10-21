@@ -326,6 +326,16 @@ foreach (_h ${_OcctHeaderFiles})
 	list (APPEND OcctIncludeDirs ${_hdir})
 endforeach ()
 list (REMOVE_DUPLICATES OcctIncludeDirs)
+# ===== OCCT 8.x: Standard_Version.hxx is generated at build time, configure it from the official template =====
+include (${CMAKE_CURRENT_SOURCE_DIR}/occt/adm/cmake/version.cmake)
+set (SET_OCC_VERSION_DEVELOPMENT "")
+string (TIMESTAMP OCCT_VERSION_DATE "%Y-%m-%d" UTC)
+configure_file (
+	${CMAKE_CURRENT_SOURCE_DIR}/occt/adm/templates/Standard_Version.hxx.in
+	${CMAKE_BINARY_DIR}/inc/Standard_Version.hxx
+	@ONLY
+)
+list (APPEND OcctIncludeDirs ${CMAKE_BINARY_DIR}/inc)
 
 set (OcctImportJSSourcesFolder occt-import-js/src)
 file (GLOB
