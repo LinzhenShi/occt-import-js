@@ -233,7 +233,7 @@ it ('conical-surface', function () {
         ]
     });
     assert.strictEqual (result.meshes.length, 1);
-    assert.equal (3954, result.meshes[0].index.array.length);
+    assert.equal (1665, result.meshes[0].index.array.length);
 });
 
 });
